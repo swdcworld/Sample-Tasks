@@ -88,34 +88,3 @@ Do:
 	Contact con = [SELECT Id, Name FROM Contact];
 	Account ac = [SELECT Id, Name FROM Contact];	
 for More details: https://developer.salesforce.com/blogs/engineering/2013/02/force-com-soql-best-practices-nulls-and-formula-fields.html
-
-9.	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
