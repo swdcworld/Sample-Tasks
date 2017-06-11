@@ -1,0 +1,121 @@
+1. Constants should be all capital letters and define with static final.
+	public static final String ACCOUNT_TYPE = 'Personal';
+2. Variable names and Method names should be camel case and use proper naming convention.(first lettere small)
+	String accountName = 'Nagarjun';
+3. Remove soql Queries and DML statements in for loops.
+Don't:
+	List<String> accountIds = new List <String> {'0013600000YWwxE','0013600000919el'};
+	List<Account> AccountsList;
+	for(String accountId: accountIds){
+		Account validAccount = [Select id, Name from Account Where id=:accountId];
+		AccountsList.add(validAccount);
+	}
+Do:
+	List<String> accountIds = new List <String> {'0013600000YWwxE','0013600000919el'};
+	List<Account> AccountsList = [Select id, Name from Account Where id IN:accountIds];
+	
+4. Always check the Collections (list, set and Map)size and null values, before you use.
+Don't:
+	List<Account> AccountsList = [Select id, Name from Account where id = 'a0Z3600000919el'];
+	Account myAccount = AccountsList.get(0);
+Do:
+	List<Account> AccountsList = [Select id, Name from Account where id = 'a0Z3600000919el'];
+	if(AccountsList.size()>0 && AccountsList !=Null)	
+		Account myAccount = AccountsList.get(0);	
+5. Always use equalsIgnoreCase, when you compare strings.
+Don't:
+	String accountType = 'Personal Account';
+	if(accountType == 'personal account') 
+		 System.debug('right');
+	else
+		System.debug('wrong');
+Do:
+	String accountType = 'Personal Account';
+	if(accountType.equalsIgnoreCase('personal account')) 
+		 System.debug('right');
+	else
+		System.debug('wrong');	
+6. Don't query the fields which are not used.
+Don't:
+	Account acc = [Select id, 
+						   Name, 
+						   Rating, 
+						   Industry, 
+						   AccountNumber, 
+						   Site,
+						   Fax, 
+						   Phone,
+						   Owner From Account limit 1];
+	acc.Industry = 'Media';
+	Update acc;
+Do:
+	Account acc = [Select id, 
+						  Industry, 
+						  From Account limit 1];
+	acc.Industry = 'Media';
+	Update acc;
+	
+7. Bulkify your Code Never use Static Ids in Queries.
+Never use Static Ids in Queries
+Don't:
+	List<String> accountIds = new List <String> {'0013600000YWwxE','0013600000919el'};
+	List<Account> AccountsList = [Select id, Name from Account Where id IN:accountIds];
+do:
+	List<String> accountIds = new List <String>();
+    for(Account ac: [Select id , Industry from account where Industry ='Media'])
+        accountIds.add(ac.id);
+	List<Account> AccountsList = [Select id, Name from Account Where id IN:accountIds];	
+Bulkify your Code
+Don't:
+	List<Account> AccountsList = [Select id, Name,Industry from Account];
+	Account ac = AccountsList.get(0);
+	ac.Industry = 'Media';
+	Update ac;
+do:
+	List<Account> toUpdateAccountList = new List<Account> ();
+	for(Account ac: [Select id, Name,Industry from Account]){
+		ac.Industry = 'Media';
+		toUpdateAccountList.add(ac);    
+	}
+	if(toUpdateAccountList.size()>0 && toUpdateAccountList!=null)
+		Update toUpdateAccountList;	
+	
+8. Don't use Nulls and Formula Fields in Queries.
+Don't:
+	Contact con = [SELECT Id, Name FROM Contact WHERE FormulaField__c = '10'];
+	Account ac = [SELECT Id, Name FROM Contact WHERE CustomField__c  = null];
+Do:
+	Contact con = [SELECT Id, Name FROM Contact];
+	Account ac = [SELECT Id, Name FROM Contact];	
+for More details: https://developer.salesforce.com/blogs/engineering/2013/02/force-com-soql-best-practices-nulls-and-formula-fields.html
+
+9.	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
